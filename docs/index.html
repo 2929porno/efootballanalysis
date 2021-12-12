@@ -278,7 +278,7 @@ $(document).ready(function () {
 <pre><code>## # A tibble: 1 x 1
 ##       n
 ##   &lt;int&gt;
-## 1   179</code></pre>
+## 1   181</code></pre>
 </div>
 </div>
 <div id="フォーメーション分析" class="section level1">
@@ -297,18 +297,19 @@ $(document).ready(function () {
             Win_rate = mean(W),
             lose_rate = mean(L),
             possesion = mean(possesion,na.rm = T))</code></pre>
-<pre><code>## # A tibble: 9 x 10
-##   manager     n    GF    GA   win  shot  pass Win_rate lose_rate possesion
-##     &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1       1    14  1.71 1.71      7  3.92 0.825    0.5       0.357     0.526
-## 2       4    41  1.85 1.37     23  5.38 0.833    0.561     0.293     0.553
-## 3       5     6  2.67 1.67      4  6    0.837    0.667     0         0.575
-## 4       6     8  2.25 0.75      5  4.57 0.854    0.625     0.125     0.513
-## 5       7    16  2    1.56      8  5.78 0.832    0.5       0.375     0.533
-## 6       8    35  1.94 1.63     16  4.43 0.835    0.457     0.343     0.561
-## 7       9    21  2    1.81     10  4.89 0.846    0.476     0.381     0.566
-## 8      10     5  1    2.6       0  3    0.802    0         0.8       0.518
-## 9      11    33  2.24 0.939    22  5.14 0.837    0.667     0.182     0.556</code></pre>
+<pre><code>## # A tibble: 10 x 10
+##    manager     n    GF    GA   win  shot  pass Win_rate lose_rate possesion
+##      &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1       1    14  1.71 1.71      7  3.92 0.825    0.5       0.357     0.526
+##  2       4    41  1.85 1.37     23  5.38 0.833    0.561     0.293     0.553
+##  3       5     6  2.67 1.67      4  6    0.837    0.667     0         0.575
+##  4       6     8  2.25 0.75      5  4.57 0.854    0.625     0.125     0.513
+##  5       7    16  2    1.56      8  5.78 0.832    0.5       0.375     0.533
+##  6       8    35  1.94 1.63     16  4.43 0.835    0.457     0.343     0.561
+##  7       9    21  2    1.81     10  4.89 0.846    0.476     0.381     0.566
+##  8      10     5  1    2.6       0  3    0.802    0         0.8       0.518
+##  9      11    33  2.24 0.939    22  5.14 0.837    0.667     0.182     0.556
+## 10      12     2  3.5  0.5       2  5    0.845    1         0         0.59</code></pre>
 </div>
 <div id="レート推移監督色分け" class="section level2">
 <h2>レート推移（監督色分け）</h2>
