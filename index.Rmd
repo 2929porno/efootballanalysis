@@ -181,6 +181,7 @@ goal_data %>%
   ggplot(aes(`way to Goal`))+
   geom_histogram(stat = "count")
 
+
 ```
 
 
