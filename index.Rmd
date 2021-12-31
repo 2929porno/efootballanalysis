@@ -11,6 +11,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggthemes)
+library(MetBrewer)
 
 score <- read_csv("スコアボード.csv")
 Manager <- read_csv("監督フォーメーション.csv")
@@ -87,7 +88,7 @@ score_manager %>%
   geom_line()+
   labs(x = "試合数", y = "RATE", title  = "レート推移",
        family = "Meiryo", color = "manager")+
-  scale_y_continuous(breaks = seq(1225, 1500, by = 20))+
+  scale_y_continuous(breaks = seq(1225, 1600, by = 20))+
   scale_x_continuous(breaks = seq(0, 200, by = 20))
   
 ```
@@ -153,11 +154,37 @@ result_opsys %>%
              fill = Win_rate))+
   geom_hline(yintercept = 0.5, lty = 2)+
   geom_bar(aes(y = Win_rate), stat = "identity")+
-  geom_text(aes(label = round(Win_rate,3)), hjust = 1.4, color = "white")+
-  scale_fill_binned()+
-  labs(y = "勝率", fill = "勝率")+
-  coord_flip()+
-  labs(title = "相手システムごとの戦績")
-
+  geom_text(aes(label = round(Win_rate,3)),
+            hjust = 1.4, color = "white")+
+  scale_fill_gradientn(colors = met.brewer("Hokusai2"))+
+  labs(y = "勝率", fill = "勝率",
+       title = "相手システムごとの戦績")+
+  coord_flip()
 
 ```
+
+#　Goalの詳細分析
+## データセット
+```{r}
+goal_data <- read_csv("Goal.csv")
+goal_data %>%
+  count(G) %>% 
+  arrange(desc(n))
+goal_data %>% 
+  count(A) %>% 
+  arrange(desc(n))
+
+#ゴールまでの経路
+goal_data %>% 
+  filter(!is.na(G)) %>% 
+  group_by(id) %>% 
+  ggplot(aes(`way to Goal`))+
+  geom_histogram(stat = "count")
+
+```
+
+
+
+
+
+
