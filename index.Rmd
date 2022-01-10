@@ -12,11 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggthemes)
 library(MetBrewer)
+library(formattable)
 
 score <- read_csv("スコアボード.csv")
 Manager <- read_csv("監督フォーメーション.csv")
 score <- score %>%
-  filter(rate != "") %>%   
+  filter(rate != "") %>%
+  replace_na(replace = list(opponent_rate = 0)) %>% 
   mutate(CP = ifelse(opponent_rate == "CP",1,0),　　　
          CP = as.factor(CP),
          opponent_rate = as.numeric(opponent_rate)) %>%
@@ -45,12 +47,9 @@ score <- score %>%
          shot = as.numeric(shot))
 ```
 
-
-# 記述統計量
-
-## オンラインマッチ対戦
-
+# 記述統計
 ```{r}
+## オンラインマッチ対戦
 score %>% 
   filter(CP == 0) %>% 
   count()
@@ -59,9 +58,7 @@ score %>%
 
 
 # フォーメーション分析
-
 ## 自陣フォーメーション
-
 ```{r}
 score_manager %>% 
   filter(CP == 0) %>% 
@@ -74,12 +71,21 @@ score_manager %>%
             pass = mean(pass,na.rm = T),
             Win_rate = mean(W),
             lose_rate = mean(L),
-            possesion = mean(possesion,na.rm = T))
+            possesion = mean(possesion,na.rm = T)) %>%
+    formattable(list(
+    manager = formatter("span", style = ~style(font.weight = "bold")),
+    GF = color_bar("#becfed"),
+    GA = color_bar("#ecc6ba"),
+Win_rate = formatter("span",
+     style = x ~ style(
+       color = ifelse(x <= 0.5, "red", "#2b2b2b"))),
+    lose_rate = formatter("span",
+     style = x ~ style(
+       color = ifelse(x >= 0.3, "red", "#2b2b2b")))))
 
 ```
 
 ## レート推移（監督色分け）
-
 ```{r}
 score_manager %>%
   filter(CP == 0) %>%
@@ -89,7 +95,7 @@ score_manager %>%
   labs(x = "試合数", y = "RATE", title  = "レート推移",
        family = "Meiryo", color = "manager")+
   scale_y_continuous(breaks = seq(1225, 1600, by = 20))+
-  scale_x_continuous(breaks = seq(0, 200, by = 20))
+  scale_x_continuous(breaks = seq(0, 500, by = 20))
   
 ```
 
@@ -105,7 +111,7 @@ score %>%
             Win_rate = mean(W),
             lose_rate = mean(L),
             n = n(),
-            rate = min(rate)) %>% 
+            rate = mean(rate)) %>% 
   filter(n >= 2)
 
 #相手フォーメーションごと戦績
@@ -132,7 +138,9 @@ score_manager %>%
   geom_boxplot(aes(x = opponent_system, y = shot, 
                    fill = opponent_system))+
   geom_hline(yintercept = mean(score_manager$shot, na.rm = T))+
-  labs(fill = "system", title = "sys毎のシュート数")
+  labs(fill = "system", title = "相手sys毎のシュート数")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 #システムごとのpossesion
 result_opsys %>%
   arrange(desc(opponent_system)) %>% 
@@ -144,7 +152,18 @@ result_opsys %>%
 
 #結果1
 result_opsys %>% 
-  rename("op_sys" = opponent_system)
+  rename("op_sys" = opponent_system) %>% 
+    formattable(list(
+    manager = formatter("span", style = ~style(font.weight = "bold")),
+    GF = color_bar("#becfed"),
+    GA = color_bar("#ecc6ba"),
+    Win_rate = formatter("span",
+     style = x ~ style(
+       color = ifelse(x <= 0.5, "red", "#2b2b2b"))),
+    lose_rate = formatter("span",
+     style = x ~ style(
+       color = ifelse(x >= 0.3, "red", "#2b2b2b")))))
+
 #結果2
 #plot
 result_opsys %>% 
@@ -163,26 +182,195 @@ result_opsys %>%
 
 ```
 
+#ポゼッションについて
+##ポゼッションには「時間」と「回数」の2軸がある
+
+##支配率及び成功率と、得失点及び勝率の関係
+```{r}
+library(corrplot)
+score %>% 
+  select(id,manager,system,opponent_rate,possesion,
+         shot,pass,GF,GA,W,L,D) %>%
+  drop_na(id,manager,system,opponent_rate,possesion,
+         shot,pass,GF,GA,W,L,D) %>% 
+  cor() %>% 
+  corrplot(tl.col="black")
+# 支配率＆得点
+# 支配率＆失点
+# 支配率＆勝率
+# 支配率＆負率
+# パス成功率＆得点
+# パス成功率＆失点
+# パス成功率＆勝率
+# パス成功率＆負率
+```
+
+
 #　Goalの詳細分析
 ## データセット
 ```{r}
+# データ概観
 goal_data <- read_csv("Goal.csv")
 goal_data %>%
-  count(G) %>% 
-  arrange(desc(n))
-goal_data %>% 
-  count(A) %>% 
-  arrange(desc(n))
+  count(G) %>%
+  drop_na() %>% 
+  arrange(desc(n)) %>% 
+  mutate(game = n_distinct(goal_data$id))
 
-#ゴールまでの経路
+#ゴールまでの経路（ヒストグラム）
 goal_data %>% 
   filter(!is.na(G)) %>% 
   group_by(id) %>% 
   ggplot(aes(`way to Goal`))+
   geom_histogram(stat = "count")
 
+goal_data %>% 
+  filter(!is.na(GA)) %>% 
+  group_by(id) %>% 
+  ggplot(aes(`way to Goal`))+
+  geom_histogram(stat = "count")
+
 
 ```
+## ゴールの価値
+### 勝利に必要な得点数
+```{r}
+# 勝利と得点数のバブルチャート
+score %>% 
+  filter(CP == 0) %>%
+  group_by(W,GF) %>% 
+  count() %>% 
+  ggplot(aes(x = W, y = GF))+
+  geom_point(aes(size = n))
+
+# 各resultごとの平均得失点数
+score %>% 
+  filter(CP == 0) %>%
+  group_by(result) %>% 
+  summarise(GF = mean(GF),
+            GA = mean(GA)) 
+# 勝利した際の得点ヒストグラム
+score %>% 
+  filter(CP == 0,
+         result == "勝") %>%
+  ggplot(aes(GF))+
+  geom_histogram(aes(y=..density..),color = "#f2f7f4",
+                 binwidth = 1)+
+  scale_x_continuous(breaks = seq(0,8,by=1))
+# 相対度数
+score %>% 
+  filter(CP == 0) %>%
+  group_by(GF) %>% 
+  summarise(W = mean(W),
+            L = mean(L),
+            D = mean(D)) %>% 
+  gather(key = results,value = rate, -GF) %>% 
+  ggplot(aes(GF,rate,fill = results, color = results))+
+  geom_point()+
+  geom_line()
+
+
+# 勝利した際の得失点バブルチャート
+score %>% 
+  filter(CP == 0,
+         result == "勝") %>%
+  group_by(GF,GA) %>% 
+  count() %>% 
+  ggplot()+
+  geom_point(aes(x = GF, y = GA, size = n))+
+  scale_x_continuous(breaks = seq(0,8,by=1))+
+  scale_y_continuous(breaks = seq(0,8,by=1))
+  
+
+```
+
+
+### 何点目の得点がもっとも価値があるか
+```{r}
+# goal_dataで分析
+goal_data %>% 
+  group_by(id) %>% 
+  mutate(No. = row_number()) %>% 
+  view()
+
+# score_managerのデータで分析
+Value_of_theGoal <- score %>% 
+  filter(CP == 0) %>%
+  group_by(GF) %>% 
+  summarise(W = mean(W)) %>% 
+  mutate(lag = lag(W),
+         marginal = W-lag(W)) %>% 
+  replace_na(replace = list(marginal = 0)) %>% 
+  rename("No." = GF)
+
+#GFのWに対する相対度数の微分（限界効果を計算）
+Value_of_theGoal %>% 
+  ggplot(aes(No.,marginal))+
+  geom_point()+
+  geom_line()+
+  scale_x_continuous(breaks = seq(0,8,by=1))
+  
+
+```
+
+
+###得点価値ランキング
+```{r}
+Goal_Value_rank <- score_manager %>% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %>% 
+  gather(key = "score", value = "scorer", #scorerをまとめる
+         starts_with("score")) %>% 
+  filter(scorer != "失点") %>% 
+  group_by(id) %>% 
+  mutate(No. = row_number()) %>% 
+  left_join(Value_of_theGoal, by = "No.") %>% 
+  group_by(scorer) %>% 
+  summarise(n = n(),
+            value = sum(marginal,rm.na = T)) %>% 
+  arrange(desc(value))
+Goal_Value_rank
+
+```
+
+
+
+# ゴール数、アシスト数
+```{r}
+score_manager %>% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %>% 
+  gather(key = "score", value = "scorer", #scorerをまとめる
+         starts_with("score")) %>% 
+  select(id,score,scorer) %>% 
+  filter(scorer != "失点") %>% 
+  group_by(id) %>% 
+  mutate(No. = row_number()) %>% 
+  select(id,score,scorer,No.) %>% 
+  arrange(id)
+score_manager %>% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %>% 
+  gather(key = "assist", value = "assistant", 
+         starts_with("assist")) %>% 
+  count(assistant) %>% 
+  arrange(desc(n)) %>% 
+  filter(!str_detect(assistant,"失点|ー"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

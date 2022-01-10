@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="2929porno" />
+
+
+<title>dataset ~ basic stats</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My analysis</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">ホーム</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">dataset ~ basic stats</h1>
+<h4 class="author">2929porno</h4>
+<h4 class="date">2021/12/05</h4>
+
+</div>
+
+
+<div id="データ整形" class="section level1">
+<h1>データ整形</h1>
+</div>
+<div id="記述統計" class="section level1">
+<h1>記述統計</h1>
+<pre class="r"><code>## オンラインマッチ対戦
+score %&gt;% 
+  filter(CP == 0) %&gt;% 
+  count()</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##       n
+##   &lt;int&gt;
+## 1   238</code></pre>
+</div>
+<div id="フォーメーション分析" class="section level1">
+<h1>フォーメーション分析</h1>
+<div id="自陣フォーメーション" class="section level2">
+<h2>自陣フォーメーション</h2>
+<pre class="r"><code>score_manager %&gt;% 
+  filter(CP == 0) %&gt;% 
+  group_by(manager) %&gt;% 
+  summarise(n = n(),
+            GF = mean(GF,na.rm = T),
+            GA = mean(GA,na.rm = T),
+            win = sum(W),
+            shot = mean(shot,na.rm = T),
+            pass = mean(pass,na.rm = T),
+            Win_rate = mean(W),
+            lose_rate = mean(L),
+            possesion = mean(possesion,na.rm = T)) %&gt;%
+    formattable(list(
+    manager = formatter(&quot;span&quot;, style = ~style(font.weight = &quot;bold&quot;)),
+    GF = color_bar(&quot;#becfed&quot;),
+    GA = color_bar(&quot;#ecc6ba&quot;),
+Win_rate = formatter(&quot;span&quot;,
+     style = x ~ style(
+       color = ifelse(x &lt;= 0.5, &quot;red&quot;, &quot;#2b2b2b&quot;))),
+    lose_rate = formatter(&quot;span&quot;,
+     style = x ~ style(
+       color = ifelse(x &gt;= 0.3, &quot;red&quot;, &quot;#2b2b2b&quot;)))))</code></pre>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+manager
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+GF
+</th>
+<th style="text-align:right;">
+GA
+</th>
+<th style="text-align:right;">
+win
+</th>
+<th style="text-align:right;">
+shot
+</th>
+<th style="text-align:right;">
+pass
+</th>
+<th style="text-align:right;">
+Win_rate
+</th>
+<th style="text-align:right;">
+lose_rate
+</th>
+<th style="text-align:right;">
+possesion
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">1</span>
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 64.29%">1.714286</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 65.93%">1.714286</span>
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+3.923077
+</td>
+<td style="text-align:right;">
+0.8246154
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.5000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3571429</span>
+</td>
+<td style="text-align:right;">
+0.5261538
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">4</span>
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 69.51%">1.853659</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 52.53%">1.365854</span>
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+5.375000
+</td>
+<td style="text-align:right;">
+0.8331250
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5609756</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.2926829</span>
+</td>
+<td style="text-align:right;">
+0.5534375
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">5</span>
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 100.00%">2.666667</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 64.10%">1.666667</span>
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+6.000000
+</td>
+<td style="text-align:right;">
+0.8366667
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6666667</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+0.5750000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">6</span>
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 84.38%">2.250000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 28.85%">0.750000</span>
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+4.571429
+</td>
+<td style="text-align:right;">
+0.8542857
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6250000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.1250000</span>
+</td>
+<td style="text-align:right;">
+0.5128571
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">7</span>
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 77.08%">2.055556</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 55.56%">1.444444</span>
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+5.545455
+</td>
+<td style="text-align:right;">
+0.8281818
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5555556</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3333333</span>
+</td>
+<td style="text-align:right;">
+0.5318182
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">8</span>
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 73.47%">1.959184</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 57.30%">1.489796</span>
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+4.902439
+</td>
+<td style="text-align:right;">
+0.8331707
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5306122</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3061224</span>
+</td>
+<td style="text-align:right;">
+0.5651220
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">9</span>
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 75.00%">2.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 69.60%">1.809524</span>
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4.888889
+</td>
+<td style="text-align:right;">
+0.8455556
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.4761905</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3809524</span>
+</td>
+<td style="text-align:right;">
+0.5661111
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">10</span>
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 37.50%">1.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 100.00%">2.600000</span>
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3.000000
+</td>
+<td style="text-align:right;">
+0.8020000
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.8000000</span>
+</td>
+<td style="text-align:right;">
+0.5180000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">11</span>
+</td>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 80.92%">2.157895</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 38.46%">1.000000</span>
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+5.051282
+</td>
+<td style="text-align:right;">
+0.8320513
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6140351</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.2280702</span>
+</td>
+<td style="text-align:right;">
+0.5597436
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">12</span>
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 71.05%">1.894737</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 46.56%">1.210526</span>
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+5.000000
+</td>
+<td style="text-align:right;">
+0.8256250
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5263158</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.1578947</span>
+</td>
+<td style="text-align:right;">
+0.5631250
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="レート推移監督色分け" class="section level2">
+<h2>レート推移（監督色分け）</h2>
+<pre class="r"><code>score_manager %&gt;%
+  filter(CP == 0) %&gt;%
+  ggplot(aes(x= 1:nrow(.), y= rate, color = factor(manager)))+
+  geom_point()+
+  geom_line()+
+  labs(x = &quot;試合数&quot;, y = &quot;RATE&quot;, title  = &quot;レート推移&quot;,
+       family = &quot;Meiryo&quot;, color = &quot;manager&quot;)+
+  scale_y_continuous(breaks = seq(1225, 1600, by = 20))+
+  scale_x_continuous(breaks = seq(0, 500, by = 20))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="相手フォーメーションごとの戦績" class="section level2">
+<h2>相手フォーメーションごとの戦績</h2>
+<pre class="r"><code>#全戦績平均
+score %&gt;% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %&gt;% 
+  summarise(GF = mean(GF),
+            GA = mean(GA),
+            Win_rate = mean(W),
+            lose_rate = mean(L),
+            n = n(),
+            rate = min(rate)) %&gt;% 
+  filter(n &gt;= 2)</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##      GF    GA Win_rate lose_rate     n  rate
+##   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+## 1  2.09  1.05    0.592     0.211    76  1331</code></pre>
+<pre class="r"><code>#相手フォーメーションごと戦績
+result_opsys &lt;- score_manager %&gt;% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %&gt;% 
+  group_by(opponent_system) %&gt;% 
+  summarise(GF = mean(GF),
+            GA = mean(GA),
+            Win_rate = mean(W),
+            lose_rate = mean(L),
+            shot = mean(shot,na.rm = T),
+            pass = mean(pass,na.rm = T),
+            possesion = mean(possesion,na.rm = T),
+            n = n(),
+            rate = min(rate)) %&gt;% 
+  filter(n &gt;= 2)
+
+#システムごとのシュート数
+score_manager %&gt;% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %&gt;% 
+  ggplot()+
+  geom_boxplot(aes(x = opponent_system, y = shot, 
+                   fill = opponent_system))+
+  geom_hline(yintercept = mean(score_manager$shot, na.rm = T))+
+  labs(fill = &quot;system&quot;, title = &quot;相手sys毎のシュート数&quot;)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<pre><code>## Warning: Removed 21 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>#システムごとのpossesion
+result_opsys %&gt;%
+  arrange(desc(opponent_system)) %&gt;% 
+  ggplot()+
+  geom_bar(aes(x = opponent_system, y = possesion, 
+                   fill = opponent_system), stat = &quot;identity&quot;)+
+  geom_hline(yintercept = mean(result_opsys$possesion), na.rm = T, 
+             color = &quot;#18437a&quot;, lty = 1, size = 1.5)</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (position_stack).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<pre class="r"><code>#結果1
+result_opsys %&gt;% 
+  rename(&quot;op_sys&quot; = opponent_system) %&gt;% 
+    formattable(list(
+    manager = formatter(&quot;span&quot;, style = ~style(font.weight = &quot;bold&quot;)),
+    GF = color_bar(&quot;#becfed&quot;),
+    GA = color_bar(&quot;#ecc6ba&quot;),
+    Win_rate = formatter(&quot;span&quot;,
+     style = x ~ style(
+       color = ifelse(x &lt;= 0.5, &quot;red&quot;, &quot;#2b2b2b&quot;))),
+    lose_rate = formatter(&quot;span&quot;,
+     style = x ~ style(
+       color = ifelse(x &gt;= 0.3, &quot;red&quot;, &quot;#2b2b2b&quot;)))))</code></pre>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+op_sys
+</th>
+<th style="text-align:right;">
+GF
+</th>
+<th style="text-align:right;">
+GA
+</th>
+<th style="text-align:right;">
+Win_rate
+</th>
+<th style="text-align:right;">
+lose_rate
+</th>
+<th style="text-align:right;">
+shot
+</th>
+<th style="text-align:right;">
+pass
+</th>
+<th style="text-align:right;">
+possesion
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+rate
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+3223
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 85.71%">3.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 0.00%">0.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+5.000000
+</td>
+<td style="text-align:right;">
+0.8400000
+</td>
+<td style="text-align:right;">
+0.5100000
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1438
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3232
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 38.10%">1.333333</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 26.85%">0.3333333</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6666667</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3333333</span>
+</td>
+<td style="text-align:right;">
+2.500000
+</td>
+<td style="text-align:right;">
+0.8250000
+</td>
+<td style="text-align:right;">
+0.5650000
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1385
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+343
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 28.57%">1.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 26.85%">0.3333333</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6666667</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3333333</span>
+</td>
+<td style="text-align:right;">
+4.000000
+</td>
+<td style="text-align:right;">
+0.8550000
+</td>
+<td style="text-align:right;">
+0.5700000
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1435
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4123
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 42.86%">1.500000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 40.28%">0.5000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+4.000000
+</td>
+<td style="text-align:right;">
+0.8100000
+</td>
+<td style="text-align:right;">
+0.5850000
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1449
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4213
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 85.71%">3.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 90.62%">1.1250000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6250000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.2500000</span>
+</td>
+<td style="text-align:right;">
+7.400000
+</td>
+<td style="text-align:right;">
+0.8480000
+</td>
+<td style="text-align:right;">
+0.5440000
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1353
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4222
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 21.43%">0.750000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 20.14%">0.2500000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.5000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+3.500000
+</td>
+<td style="text-align:right;">
+0.8100000
+</td>
+<td style="text-align:right;">
+0.6100000
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1408
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4312
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 67.98%">2.379310</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 100.00%">1.2413793</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5862069</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.2068966</span>
+</td>
+<td style="text-align:right;">
+5.409091
+</td>
+<td style="text-align:right;">
+0.8286364
+</td>
+<td style="text-align:right;">
+0.5681818
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+1331
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+433
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 66.67%">2.333333</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 80.56%">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6666667</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3333333</span>
+</td>
+<td style="text-align:right;">
+6.500000
+</td>
+<td style="text-align:right;">
+0.8700000
+</td>
+<td style="text-align:right;">
+0.5450000
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1392
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5212
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 60.00%">2.100000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 88.61%">1.1000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.1000000</span>
+</td>
+<td style="text-align:right;">
+4.875000
+</td>
+<td style="text-align:right;">
+0.8425000
+</td>
+<td style="text-align:right;">
+0.5687500
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+1411
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+532
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 100.00%">3.500000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 80.56%">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+5.000000
+</td>
+<td style="text-align:right;">
+0.8300000
+</td>
+<td style="text-align:right;">
+0.5400000
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1367
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 14.29%">0.500000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 80.56%">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.5000000</span>
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1407
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#結果2
+#plot
+result_opsys %&gt;% 
+  mutate(opponent_system = as.factor(opponent_system)) %&gt;% 
+  arrange(desc(opponent_system) )%&gt;% 
+  ggplot(aes(x = opponent_system, y = Win_rate,
+             fill = Win_rate))+
+  geom_hline(yintercept = 0.5, lty = 2)+
+  geom_bar(aes(y = Win_rate), stat = &quot;identity&quot;)+
+  geom_text(aes(label = round(Win_rate,3)),
+            hjust = 1.4, color = &quot;white&quot;)+
+  scale_fill_gradientn(colors = met.brewer(&quot;Hokusai2&quot;))+
+  labs(y = &quot;勝率&quot;, fill = &quot;勝率&quot;,
+       title = &quot;相手システムごとの戦績&quot;)+
+  coord_flip()</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
+<p>#ポゼッションについて ##ポゼッションには「時間」と「回数」の2軸がある</p>
+<p>##支配率及び成功率と、得失点及び勝率の関係</p>
+<pre class="r"><code># 支配率＆得点
+# 支配率＆失点
+# 支配率＆勝率</code></pre>
+<p>#　Goalの詳細分析 ## データセット</p>
+<pre class="r"><code># データ概観
+goal_data &lt;- read_csv(&quot;Goal.csv&quot;)</code></pre>
+<pre><code>## Rows: 512 Columns: 10</code></pre>
+<pre><code>## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (7): G, A, GA, foot, way to Goal, cross, setplay
+## dbl (3): id, time, middle</code></pre>
+<pre><code>## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>goal_data %&gt;%
+  count(G) %&gt;% 
+  arrange(desc(n))</code></pre>
+<pre><code>## # A tibble: 9 x 2
+##   G              n
+##   &lt;chr&gt;      &lt;int&gt;
+## 1 &lt;NA&gt;         486
+## 2 Neymar         6
+## 3 Messi          5
+## 4 Totti          5
+## 5 Rummenigge     4
+## 6 Isak           3
+## 7 -              1
+## 8 Cruijff        1
+## 9 kante          1</code></pre>
+<pre class="r"><code>goal_data %&gt;% 
+  count(A) %&gt;% 
+  arrange(desc(n))</code></pre>
+<pre><code>## # A tibble: 9 x 2
+##   A              n
+##   &lt;chr&gt;      &lt;int&gt;
+## 1 &lt;NA&gt;         490
+## 2 Messi          5
+## 3 Totti          5
+## 4 Arnold         3
+## 5 Cruijff        2
+## 6 Neymar         2
+## 7 Petit          2
+## 8 Ronaldinho     2
+## 9 -              1</code></pre>
+<pre class="r"><code>#ゴールまでの経路（ヒストグラム）
+goal_data %&gt;% 
+  filter(!is.na(G)) %&gt;% 
+  group_by(id) %&gt;% 
+  ggplot(aes(`way to Goal`))+
+  geom_histogram(stat = &quot;count&quot;)</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>goal_data %&gt;% 
+  filter(!is.na(GA)) %&gt;% 
+  group_by(id) %&gt;% 
+  ggplot(aes(`way to Goal`))+
+  geom_histogram(stat = &quot;count&quot;)</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-6-2.png" width="672" /> ## ゴールの価値 ### 勝利に必要な得点数</p>
+<div id="何点目の得点がもっとも価値があるか" class="section level3">
+<h3>何点目の得点がもっとも価値があるか</h3>
+<p>###得点価値ランキング</p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
