@@ -268,18 +268,16 @@ $(document).ready(function () {
 <div id="データ整形" class="section level1">
 <h1>データ整形</h1>
 </div>
-<div id="記述統計量" class="section level1">
-<h1>記述統計量</h1>
-<div id="オンラインマッチ対戦" class="section level2">
-<h2>オンラインマッチ対戦</h2>
-<pre class="r"><code>score %&gt;% 
+<div id="記述統計" class="section level1">
+<h1>記述統計</h1>
+<pre class="r"><code>## オンラインマッチ対戦
+score %&gt;% 
   filter(CP == 0) %&gt;% 
   count()</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##       n
 ##   &lt;int&gt;
-## 1   189</code></pre>
-</div>
+## 1   240</code></pre>
 </div>
 <div id="フォーメーション分析" class="section level1">
 <h1>フォーメーション分析</h1>
@@ -296,20 +294,375 @@ $(document).ready(function () {
             pass = mean(pass,na.rm = T),
             Win_rate = mean(W),
             lose_rate = mean(L),
-            possesion = mean(possesion,na.rm = T))</code></pre>
-<pre><code>## # A tibble: 10 x 10
-##    manager     n    GF    GA   win  shot  pass Win_rate lose_rate possesion
-##      &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1       1    14  1.71 1.71      7  3.92 0.825    0.5       0.357     0.526
-##  2       4    41  1.85 1.37     23  5.38 0.833    0.561     0.293     0.553
-##  3       5     6  2.67 1.67      4  6    0.837    0.667     0         0.575
-##  4       6     8  2.25 0.75      5  4.57 0.854    0.625     0.125     0.513
-##  5       7    16  2    1.56      8  5.78 0.832    0.5       0.375     0.533
-##  6       8    35  1.94 1.63     16  4.43 0.835    0.457     0.343     0.561
-##  7       9    21  2    1.81     10  4.89 0.846    0.476     0.381     0.566
-##  8      10     5  1    2.6       0  3    0.802    0         0.8       0.518
-##  9      11    33  2.24 0.939    22  5.14 0.837    0.667     0.182     0.556
-## 10      12    10  1.9  1.3       5  4.7  0.834    0.5       0.3       0.561</code></pre>
+            possesion = mean(possesion,na.rm = T)) %&gt;%
+    formattable(list(
+    manager = formatter(&quot;span&quot;, style = ~style(font.weight = &quot;bold&quot;)),
+    GF = color_bar(&quot;#becfed&quot;),
+    GA = color_bar(&quot;#ecc6ba&quot;),
+Win_rate = formatter(&quot;span&quot;,
+     style = x ~ style(
+       color = ifelse(x &lt;= 0.5, &quot;red&quot;, &quot;#2b2b2b&quot;))),
+    lose_rate = formatter(&quot;span&quot;,
+     style = x ~ style(
+       color = ifelse(x &gt;= 0.3, &quot;red&quot;, &quot;#2b2b2b&quot;)))))</code></pre>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+manager
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+GF
+</th>
+<th style="text-align:right;">
+GA
+</th>
+<th style="text-align:right;">
+win
+</th>
+<th style="text-align:right;">
+shot
+</th>
+<th style="text-align:right;">
+pass
+</th>
+<th style="text-align:right;">
+Win_rate
+</th>
+<th style="text-align:right;">
+lose_rate
+</th>
+<th style="text-align:right;">
+possesion
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">1</span>
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 64.29%">1.714286</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 65.93%">1.714286</span>
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+3.923077
+</td>
+<td style="text-align:right;">
+0.8246154
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.5000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3571429</span>
+</td>
+<td style="text-align:right;">
+0.5261538
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">4</span>
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 69.51%">1.853659</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 52.53%">1.365854</span>
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+5.375000
+</td>
+<td style="text-align:right;">
+0.8331250
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5609756</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.2926829</span>
+</td>
+<td style="text-align:right;">
+0.5534375
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">5</span>
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 100.00%">2.666667</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 64.10%">1.666667</span>
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+6.000000
+</td>
+<td style="text-align:right;">
+0.8366667
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6666667</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+0.5750000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">6</span>
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 84.38%">2.250000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 28.85%">0.750000</span>
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+4.571429
+</td>
+<td style="text-align:right;">
+0.8542857
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6250000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.1250000</span>
+</td>
+<td style="text-align:right;">
+0.5128571
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">7</span>
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 77.08%">2.055556</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 55.56%">1.444444</span>
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+5.545455
+</td>
+<td style="text-align:right;">
+0.8281818
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5555556</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3333333</span>
+</td>
+<td style="text-align:right;">
+0.5318182
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">8</span>
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 73.47%">1.959184</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 57.30%">1.489796</span>
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+4.902439
+</td>
+<td style="text-align:right;">
+0.8331707
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5306122</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3061224</span>
+</td>
+<td style="text-align:right;">
+0.5651220
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">9</span>
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 75.00%">2.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 69.60%">1.809524</span>
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4.888889
+</td>
+<td style="text-align:right;">
+0.8455556
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.4761905</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3809524</span>
+</td>
+<td style="text-align:right;">
+0.5661111
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">10</span>
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 37.50%">1.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 100.00%">2.600000</span>
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3.000000
+</td>
+<td style="text-align:right;">
+0.8020000
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.8000000</span>
+</td>
+<td style="text-align:right;">
+0.5180000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">11</span>
+</td>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 80.26%">2.140351</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 38.46%">1.000000</span>
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+5.051282
+</td>
+<td style="text-align:right;">
+0.8320513
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6140351</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.2280702</span>
+</td>
+<td style="text-align:right;">
+0.5597436
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">12</span>
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 71.43%">1.904762</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 43.96%">1.142857</span>
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+4.888889
+</td>
+<td style="text-align:right;">
+0.8255556
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.5714286</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.1428571</span>
+</td>
+<td style="text-align:right;">
+0.5627778
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="レート推移監督色分け" class="section level2">
 <h2>レート推移（監督色分け）</h2>
@@ -321,7 +674,7 @@ $(document).ready(function () {
   labs(x = &quot;試合数&quot;, y = &quot;RATE&quot;, title  = &quot;レート推移&quot;,
        family = &quot;Meiryo&quot;, color = &quot;manager&quot;)+
   scale_y_continuous(breaks = seq(1225, 1600, by = 20))+
-  scale_x_continuous(breaks = seq(0, 200, by = 20))</code></pre>
+  scale_x_continuous(breaks = seq(0, 500, by = 20))</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
 <div id="相手フォーメーションごとの戦績" class="section level2">
@@ -335,12 +688,12 @@ score %&gt;%
             Win_rate = mean(W),
             lose_rate = mean(L),
             n = n(),
-            rate = min(rate)) %&gt;% 
+            rate = mean(rate)) %&gt;% 
   filter(n &gt;= 2)</code></pre>
 <pre><code>## # A tibble: 1 x 6
 ##      GF    GA Win_rate lose_rate     n  rate
 ##   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1  2.16  1.02    0.628     0.209    43  1346</code></pre>
+## 1  2.08  1.04    0.603     0.205    78 1444.</code></pre>
 <pre class="r"><code>#相手フォーメーションごと戦績
 result_opsys &lt;- score_manager %&gt;% 
   filter(CP == 0,
@@ -365,8 +718,9 @@ score_manager %&gt;%
   geom_boxplot(aes(x = opponent_system, y = shot, 
                    fill = opponent_system))+
   geom_hline(yintercept = mean(score_manager$shot, na.rm = T))+
-  labs(fill = &quot;system&quot;, title = &quot;sys毎のシュート数&quot;)</code></pre>
-<pre><code>## Warning: Removed 11 rows containing non-finite values (stat_boxplot).</code></pre>
+  labs(fill = &quot;system&quot;, title = &quot;相手sys毎のシュート数&quot;)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<pre><code>## Warning: Removed 21 rows containing non-finite values (stat_boxplot).</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>#システムごとのpossesion
 result_opsys %&gt;%
@@ -376,21 +730,411 @@ result_opsys %&gt;%
                    fill = opponent_system), stat = &quot;identity&quot;)+
   geom_hline(yintercept = mean(result_opsys$possesion), na.rm = T, 
              color = &quot;#18437a&quot;, lty = 1, size = 1.5)</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (position_stack).</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
 <pre class="r"><code>#結果1
 result_opsys %&gt;% 
-  rename(&quot;op_sys&quot; = opponent_system)</code></pre>
-<pre><code>## # A tibble: 8 x 10
-##   op_sys    GF    GA Win_rate lose_rate  shot  pass possesion     n  rate
-##   &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1 3232    2     0       1         0       4   0.84      0.62      2  1385
-## 2 343     1.5   0       1         0       4   0.85      0.51      2  1437
-## 3 4213    3     1.6     0.4       0.4     7.5 0.855     0.54      5  1353
-## 4 4222    0.75  0.25    0.5       0       3.5 0.81      0.61      4  1408
-## 5 4312    2.54  1.23    0.692     0.231   5   0.828     0.551    13  1346
-## 6 433     2.33  1       0.667     0.333   6.5 0.87      0.545     3  1392
-## 7 5212    1.83  1.17    0.333     0.167   4.5 0.842     0.57      6  1411
-## 8 532     3.5   1       1         0       5   0.83      0.54      2  1367</code></pre>
+  rename(&quot;op_sys&quot; = opponent_system) %&gt;% 
+    formattable(list(
+    manager = formatter(&quot;span&quot;, style = ~style(font.weight = &quot;bold&quot;)),
+    GF = color_bar(&quot;#becfed&quot;),
+    GA = color_bar(&quot;#ecc6ba&quot;),
+    Win_rate = formatter(&quot;span&quot;,
+     style = x ~ style(
+       color = ifelse(x &lt;= 0.5, &quot;red&quot;, &quot;#2b2b2b&quot;))),
+    lose_rate = formatter(&quot;span&quot;,
+     style = x ~ style(
+       color = ifelse(x &gt;= 0.3, &quot;red&quot;, &quot;#2b2b2b&quot;)))))</code></pre>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+op_sys
+</th>
+<th style="text-align:right;">
+GF
+</th>
+<th style="text-align:right;">
+GA
+</th>
+<th style="text-align:right;">
+Win_rate
+</th>
+<th style="text-align:right;">
+lose_rate
+</th>
+<th style="text-align:right;">
+shot
+</th>
+<th style="text-align:right;">
+pass
+</th>
+<th style="text-align:right;">
+possesion
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+rate
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+3223
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 85.71%">3.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 0.00%">0.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+5.000000
+</td>
+<td style="text-align:right;">
+0.8400000
+</td>
+<td style="text-align:right;">
+0.5100000
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1438
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3232
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 38.10%">1.333333</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 27.03%">0.3333333</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6666667</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3333333</span>
+</td>
+<td style="text-align:right;">
+2.500000
+</td>
+<td style="text-align:right;">
+0.8250000
+</td>
+<td style="text-align:right;">
+0.5650000
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1385
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+343
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 28.57%">1.000000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 27.03%">0.3333333</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6666667</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3333333</span>
+</td>
+<td style="text-align:right;">
+4.000000
+</td>
+<td style="text-align:right;">
+0.8550000
+</td>
+<td style="text-align:right;">
+0.5700000
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1435
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4123
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 38.10%">1.333333</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 27.03%">0.3333333</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+3.333333
+</td>
+<td style="text-align:right;">
+0.8166667
+</td>
+<td style="text-align:right;">
+0.5633333
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1449
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4213
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 82.14%">2.875000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 91.22%">1.1250000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6250000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.2500000</span>
+</td>
+<td style="text-align:right;">
+7.400000
+</td>
+<td style="text-align:right;">
+0.8480000
+</td>
+<td style="text-align:right;">
+0.5440000
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1353
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4222
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 21.43%">0.750000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 20.27%">0.2500000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.5000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+3.500000
+</td>
+<td style="text-align:right;">
+0.8100000
+</td>
+<td style="text-align:right;">
+0.6100000
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1408
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4312
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 68.57%">2.400000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 100.00%">1.2333333</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.2000000</span>
+</td>
+<td style="text-align:right;">
+5.434783
+</td>
+<td style="text-align:right;">
+0.8282609
+</td>
+<td style="text-align:right;">
+0.5695652
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+1331
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+433
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 66.67%">2.333333</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 81.08%">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6666667</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.3333333</span>
+</td>
+<td style="text-align:right;">
+6.500000
+</td>
+<td style="text-align:right;">
+0.8700000
+</td>
+<td style="text-align:right;">
+0.5450000
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1392
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5212
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 60.00%">2.100000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 89.19%">1.1000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.6000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.1000000</span>
+</td>
+<td style="text-align:right;">
+4.875000
+</td>
+<td style="text-align:right;">
+0.8425000
+</td>
+<td style="text-align:right;">
+0.5687500
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+1411
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+532
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 100.00%">3.500000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 81.08%">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: #2b2b2b">0.0000000</span>
+</td>
+<td style="text-align:right;">
+5.000000
+</td>
+<td style="text-align:right;">
+0.8300000
+</td>
+<td style="text-align:right;">
+0.5400000
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1367
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #becfed; width: 14.29%">0.500000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #ecc6ba; width: 81.08%">1.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.0000000</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">0.5000000</span>
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1407
+</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>#結果2
 #plot
 result_opsys %&gt;% 
@@ -407,8 +1151,29 @@ result_opsys %&gt;%
        title = &quot;相手システムごとの戦績&quot;)+
   coord_flip()</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
+<p>#ポゼッションについて ##ポゼッションには「時間」と「回数」の2軸がある</p>
+<p>##支配率及び成功率と、得失点及び勝率の関係</p>
+<pre class="r"><code>library(corrplot)</code></pre>
+<pre><code>## corrplot 0.92 loaded</code></pre>
+<pre class="r"><code>score %&gt;% 
+  select(id,manager,system,opponent_rate,possesion,
+         shot,pass,GF,GA,W,L,D) %&gt;%
+  drop_na(id,manager,system,opponent_rate,possesion,
+         shot,pass,GF,GA,W,L,D) %&gt;% 
+  cor() %&gt;% 
+  corrplot(tl.col=&quot;black&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># 支配率＆得点
+# 支配率＆失点
+# 支配率＆勝率
+# 支配率＆負率
+# パス成功率＆得点
+# パス成功率＆失点
+# パス成功率＆勝率
+# パス成功率＆負率</code></pre>
 <p>#　Goalの詳細分析 ## データセット</p>
-<pre class="r"><code>goal_data &lt;- read_csv(&quot;Goal.csv&quot;)</code></pre>
+<pre class="r"><code># データ概観
+goal_data &lt;- read_csv(&quot;Goal.csv&quot;)</code></pre>
 <pre><code>## Rows: 512 Columns: 10</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
@@ -418,43 +1183,202 @@ result_opsys %&gt;%
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>goal_data %&gt;%
-  count(G) %&gt;% 
-  arrange(desc(n))</code></pre>
-<pre><code>## # A tibble: 8 x 2
-##   G              n
-##   &lt;chr&gt;      &lt;int&gt;
-## 1 &lt;NA&gt;         495
-## 2 Neymar         4
-## 3 Totti          4
-## 4 Rummenigge     3
-## 5 Isak           2
-## 6 Messi          2
-## 7 -              1
-## 8 kante          1</code></pre>
-<pre class="r"><code>goal_data %&gt;% 
-  count(A) %&gt;% 
-  arrange(desc(n))</code></pre>
-<pre><code>## # A tibble: 9 x 2
-##   A              n
-##   &lt;chr&gt;      &lt;int&gt;
-## 1 &lt;NA&gt;         498
-## 2 Messi          4
-## 3 Arnold         2
-## 4 Neymar         2
-## 5 Ronaldinho     2
-## 6 -              1
-## 7 Cruijff        1
-## 8 Petit          1
-## 9 Totti          1</code></pre>
-<pre class="r"><code>#ゴールまでの経路
+  count(G) %&gt;%
+  drop_na() %&gt;% 
+  arrange(desc(n)) %&gt;% 
+  mutate(game = n_distinct(goal_data$id))</code></pre>
+<pre><code>## # A tibble: 9 x 3
+##   G              n  game
+##   &lt;chr&gt;      &lt;int&gt; &lt;int&gt;
+## 1 Messi          6    17
+## 2 Neymar         6    17
+## 3 Rummenigge     5    17
+## 4 Totti          5    17
+## 5 Isak           3    17
+## 6 Cruijff        2    17
+## 7 -              1    17
+## 8 Haaland        1    17
+## 9 kante          1    17</code></pre>
+<pre class="r"><code>#ゴールまでの経路（ヒストグラム）
 goal_data %&gt;% 
   filter(!is.na(G)) %&gt;% 
   group_by(id) %&gt;% 
   ggplot(aes(`way to Goal`))+
   geom_histogram(stat = &quot;count&quot;)</code></pre>
 <pre><code>## Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>goal_data %&gt;% 
+  filter(!is.na(GA)) %&gt;% 
+  group_by(id) %&gt;% 
+  ggplot(aes(`way to Goal`))+
+  geom_histogram(stat = &quot;count&quot;)</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-6-2.png" width="672" /> ## ゴールの価値 ### 勝利に必要な得点数</p>
+<pre class="r"><code># 勝利と得点数のバブルチャート
+score %&gt;% 
+  filter(CP == 0) %&gt;%
+  group_by(W,GF) %&gt;% 
+  count() %&gt;% 
+  ggplot(aes(x = W, y = GF))+
+  geom_point(aes(size = n))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code># 各resultごとの平均得失点数
+score %&gt;% 
+  filter(CP == 0) %&gt;%
+  group_by(result) %&gt;% 
+  summarise(GF = mean(GF),
+            GA = mean(GA)) </code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   result    GF    GA
+##   &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 引     1.41  1.41 
+## 2 勝     2.67  0.720
+## 3 負     0.970 2.60</code></pre>
+<pre class="r"><code># 勝利した際の得点ヒストグラム
+score %&gt;% 
+  filter(CP == 0,
+         result == &quot;勝&quot;) %&gt;%
+  ggplot(aes(GF))+
+  geom_histogram(aes(y=..density..),color = &quot;#f2f7f4&quot;,
+                 binwidth = 1)+
+  scale_x_continuous(breaks = seq(0,8,by=1))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<pre class="r"><code># 相対度数
+score %&gt;% 
+  filter(CP == 0) %&gt;%
+  group_by(GF) %&gt;% 
+  summarise(W = mean(W),
+            L = mean(L),
+            D = mean(D)) %&gt;% 
+  gather(key = results,value = rate, -GF) %&gt;% 
+  ggplot(aes(GF,rate,fill = results, color = results))+
+  geom_point()+
+  geom_line()</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+<pre class="r"><code># 勝利した際の得失点バブルチャート
+score %&gt;% 
+  filter(CP == 0,
+         result == &quot;勝&quot;) %&gt;%
+  group_by(GF,GA) %&gt;% 
+  count() %&gt;% 
+  ggplot()+
+  geom_point(aes(x = GF, y = GA, size = n))+
+  scale_x_continuous(breaks = seq(0,8,by=1))+
+  scale_y_continuous(breaks = seq(0,8,by=1))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
+<div id="何点目の得点がもっとも価値があるか" class="section level3">
+<h3>何点目の得点がもっとも価値があるか</h3>
+<pre class="r"><code># goal_dataで分析
+goal_data %&gt;% 
+  group_by(id) %&gt;% 
+  mutate(No. = row_number()) %&gt;% 
+  view()
+
+# score_managerのデータで分析
+Value_of_theGoal &lt;- score %&gt;% 
+  filter(CP == 0) %&gt;%
+  group_by(GF) %&gt;% 
+  summarise(W = mean(W)) %&gt;% 
+  mutate(lag = lag(W),
+         marginal = W-lag(W)) %&gt;% 
+  replace_na(replace = list(marginal = 0)) %&gt;% 
+  rename(&quot;No.&quot; = GF)
+
+#GFのWに対する相対度数の微分（限界効果を計算）
+Value_of_theGoal %&gt;% 
+  ggplot(aes(No.,marginal))+
+  geom_point()+
+  geom_line()+
+  scale_x_continuous(breaks = seq(0,8,by=1))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>###得点価値ランキング</p>
+<pre class="r"><code>Goal_Value_rank &lt;- score_manager %&gt;% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %&gt;% 
+  gather(key = &quot;score&quot;, value = &quot;scorer&quot;, #scorerをまとめる
+         starts_with(&quot;score&quot;)) %&gt;% 
+  filter(scorer != &quot;失点&quot;) %&gt;% 
+  group_by(id) %&gt;% 
+  mutate(No. = row_number()) %&gt;% 
+  left_join(Value_of_theGoal, by = &quot;No.&quot;) %&gt;% 
+  group_by(scorer) %&gt;% 
+  summarise(n = n(),
+            value = sum(marginal,rm.na = T)) %&gt;% 
+  arrange(desc(value))
+Goal_Value_rank</code></pre>
+<pre><code>## # A tibble: 15 x 3
+##    scorer          n value
+##    &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt;
+##  1 Rummenigge     46 14.1 
+##  2 Cruijff        28  8.01
+##  3 Totti          21  7.05
+##  4 Messi          24  6.92
+##  5 Neymar         11  3.70
+##  6 Havertz         7  2.60
+##  7 Nakata          6  2.51
+##  8 Vieira          5  2.36
+##  9 ー              4  2.16
+## 10 Isak            3  2.04
+## 11 Ronaldinho      3  2.04
+## 12 Beckenbauer     3  1.84
+## 13 Beckham         2  1.68
+## 14 Haaland         1  1.36
+## 15 kante           1  1.24</code></pre>
 </div>
+</div>
+</div>
+<div id="ゴール数アシスト数" class="section level1">
+<h1>ゴール数、アシスト数</h1>
+<pre class="r"><code>score_manager %&gt;% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %&gt;% 
+  gather(key = &quot;score&quot;, value = &quot;scorer&quot;, #scorerをまとめる
+         starts_with(&quot;score&quot;)) %&gt;% 
+  select(id,score,scorer) %&gt;% 
+  filter(scorer != &quot;失点&quot;) %&gt;% 
+  group_by(id) %&gt;% 
+  mutate(No. = row_number()) %&gt;% 
+  select(id,score,scorer,No.) %&gt;% 
+  arrange(id)</code></pre>
+<pre><code>## # A tibble: 165 x 4
+## # Groups:   id [70]
+##       id score       scorer       No.
+##    &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;int&gt;
+##  1   224 scorer...18 Rummenigge     1
+##  2   225 scorer...16 Rummenigge     1
+##  3   225 scorer...18 Cruijff        2
+##  4   225 scorer...20 Rummenigge     3
+##  5   226 scorer...16 Messi          1
+##  6   226 scorer...20 Messi          2
+##  7   227 scorer...16 Vieira         1
+##  8   227 scorer...20 Cruijff        2
+##  9   227 scorer...22 Totti          3
+## 10   227 scorer...24 Neymar         4
+## # ... with 155 more rows</code></pre>
+<pre class="r"><code>score_manager %&gt;% 
+  filter(CP == 0,
+         manager %in% c(11,12)) %&gt;% 
+  gather(key = &quot;assist&quot;, value = &quot;assistant&quot;, 
+         starts_with(&quot;assist&quot;)) %&gt;% 
+  count(assistant) %&gt;% 
+  arrange(desc(n)) %&gt;% 
+  filter(!str_detect(assistant,&quot;失点|ー&quot;))</code></pre>
+<pre><code>## # A tibble: 13 x 2
+##    assistant       n
+##    &lt;chr&gt;       &lt;int&gt;
+##  1 Messi          28
+##  2 Totti          23
+##  3 Cruijff        13
+##  4 Nakata         10
+##  5 Rummenigge     10
+##  6 Arnold          6
+##  7 Ronaldinho      6
+##  8 Beckenbauer     5
+##  9 Beckham         3
+## 10 Neymar          3
+## 11 Petit           2
+## 12 Vieira          2
+## 13 Davies          1</code></pre>
 </div>
 
 

@@ -314,7 +314,7 @@ Value_of_theGoal %>%
 ```
 
 
-###得点価値ランキング
+### 得点価値ランキング
 ```{r}
 Goal_Value_rank <- score_manager %>% 
   filter(CP == 0,
