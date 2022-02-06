@@ -2,7 +2,11 @@
 title: "dataset ~ basic stats"
 author: "2929porno"
 date: "2021/12/05"
-output: html_document
+output: 
+ html_document:
+ toc: TRUE
+ toc_depth: 2
+ theme: cosmo
 ---
 
 # データ整形
@@ -128,8 +132,10 @@ result_opsys <- score_manager %>%
             possesion = mean(possesion,na.rm = T),
             n = n(),
             rate = min(rate)) %>% 
+  mutate(across(2:8,round,3)) %>% 
   filter(n >= 2)
-
+result_opsys
+  
 #システムごとのシュート数
 score_manager %>% 
   filter(CP == 0,
@@ -232,6 +238,7 @@ goal_data %>%
 
 
 ```
+
 ## ゴールの価値
 ### 勝利に必要な得点数
 ```{r}
