@@ -17,7 +17,7 @@
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -30,9 +30,11 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -43,21 +45,98 @@
   ul.task-list{list-style: none;}
     </style>
 
-<style type="text/css">code{white-space: pre;}</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+
+<style type="text/css">
+  code {
+    white-space: pre;
   }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
 }
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { font-weight: bold; } /* Alert */
+code span.an { font-style: italic; } /* Annotation */
+code span.cf { font-weight: bold; } /* ControlFlow */
+code span.co { font-style: italic; } /* Comment */
+code span.cv { font-style: italic; } /* CommentVar */
+code span.do { font-style: italic; } /* Documentation */
+code span.dt { text-decoration: underline; } /* DataType */
+code span.er { font-weight: bold; } /* Error */
+code span.in { font-style: italic; } /* Information */
+code span.kw { font-weight: bold; } /* Keyword */
+code span.pp { font-weight: bold; } /* Preprocessor */
+code span.wa { font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
 </script>
 
 
 
 
-
+<link rel="stylesheet" href="site_style.css" type="text/css" />
 
 
 
@@ -216,7 +295,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -226,6 +371,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -255,55 +410,63 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">dataset ~ basic stats</h1>
 <h4 class="author">2929porno</h4>
-<h4 class="date">2021/12/05</h4>
+<h4 class="date">2022/2/20</h4>
 
 </div>
 
 
-<div id="データ整形" class="section level1">
-<h1>データ整形</h1>
+<div id="データ整形" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> データ整形</h1>
 </div>
-<div id="記述統計" class="section level1">
-<h1>記述統計</h1>
-<pre class="r"><code>## オンラインマッチ対戦
-score %&gt;% 
-  filter(CP == 0) %&gt;% 
-  count()</code></pre>
+<div id="記述統計" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 記述統計</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## オンラインマッチ対戦</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>score <span class="sc">%&gt;%</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##       n
 ##   &lt;int&gt;
 ## 1   256</code></pre>
 </div>
-<div id="フォーメーション分析" class="section level1">
-<h1>フォーメーション分析</h1>
-<div id="自陣フォーメーション" class="section level2">
-<h2>自陣フォーメーション</h2>
-<pre class="r"><code>score_manager %&gt;% 
-  filter(CP == 0) %&gt;% 
-  group_by(manager) %&gt;% 
-  summarise(n = n(),
-            GF = mean(GF,na.rm = T),
-            GA = mean(GA,na.rm = T),
-            win = sum(W),
-            shot = mean(shot,na.rm = T),
-            pass = mean(pass,na.rm = T),
-            Win_rate = mean(W),
-            lose_rate = mean(L),
-            possesion = mean(possesion,na.rm = T)) %&gt;%
-    formattable(list(
-    manager = formatter(&quot;span&quot;, style = ~style(font.weight = &quot;bold&quot;)),
-    GF = color_bar(&quot;#becfed&quot;),
-    GA = color_bar(&quot;#ecc6ba&quot;),
-Win_rate = formatter(&quot;span&quot;,
-     style = x ~ style(
-       color = ifelse(x &lt;= 0.5, &quot;red&quot;, &quot;#2b2b2b&quot;))),
-    lose_rate = formatter(&quot;span&quot;,
-     style = x ~ style(
-       color = ifelse(x &gt;= 0.3, &quot;red&quot;, &quot;#2b2b2b&quot;)))))</code></pre>
+<div id="フォーメーション分析" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> フォーメーション分析</h1>
+<div id="自陣フォーメーション" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> 自陣フォーメーション</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>score_manager <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(manager) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">GF =</span> <span class="fu">mean</span>(GF,<span class="at">na.rm =</span> T),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">GA =</span> <span class="fu">mean</span>(GA,<span class="at">na.rm =</span> T),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">win =</span> <span class="fu">sum</span>(W),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">shot =</span> <span class="fu">mean</span>(shot,<span class="at">na.rm =</span> T),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">pass =</span> <span class="fu">mean</span>(pass,<span class="at">na.rm =</span> T),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">Win_rate =</span> <span class="fu">mean</span>(W),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">lose_rate =</span> <span class="fu">mean</span>(L),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">possesion =</span> <span class="fu">mean</span>(possesion,<span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">formattable</span>(<span class="fu">list</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">manager =</span> <span class="fu">formatter</span>(<span class="st">&quot;span&quot;</span>, <span class="at">style =</span> <span class="sc">~</span><span class="fu">style</span>(<span class="at">font.weight =</span> <span class="st">&quot;bold&quot;</span>)),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">GF =</span> <span class="fu">color_bar</span>(<span class="st">&quot;#becfed&quot;</span>),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">GA =</span> <span class="fu">color_bar</span>(<span class="st">&quot;#ecc6ba&quot;</span>),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="at">Win_rate =</span> <span class="fu">formatter</span>(<span class="st">&quot;span&quot;</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">style =</span> x <span class="sc">~</span> <span class="fu">style</span>(</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="fu">ifelse</span>(x <span class="sc">&lt;=</span> <span class="fl">0.5</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#2b2b2b&quot;</span>))),</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">lose_rate =</span> <span class="fu">formatter</span>(<span class="st">&quot;span&quot;</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">style =</span> x <span class="sc">~</span> <span class="fu">style</span>(</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="fu">ifelse</span>(x <span class="sc">&gt;=</span> <span class="fl">0.3</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#2b2b2b&quot;</span>)))))</span></code></pre></div>
 <table class="table table-condensed">
 <thead>
 <tr>
@@ -695,53 +858,53 @@ possesion
 </tbody>
 </table>
 </div>
-<div id="レート推移監督色分け" class="section level2">
-<h2>レート推移（監督色分け）</h2>
-<pre class="r"><code>score_manager %&gt;%
-  filter(CP == 0) %&gt;%
-  ggplot(aes(x= 1:nrow(.), y= rate, color = factor(manager)))+
-  geom_point()+
-  geom_line()+
-  labs(x = &quot;試合数&quot;, y = &quot;RATE&quot;, title  = &quot;レート推移&quot;,
-       family = &quot;Meiryo&quot;, color = &quot;manager&quot;)+
-  scale_y_continuous(breaks = seq(1225, 1600, by = 20))+
-  scale_x_continuous(breaks = seq(0, 500, by = 20))</code></pre>
+<div id="レート推移監督色分け" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> レート推移（監督色分け）</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>score_manager <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(.), <span class="at">y=</span> rate, <span class="at">color =</span> <span class="fu">factor</span>(manager)))<span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;試合数&quot;</span>, <span class="at">y =</span> <span class="st">&quot;RATE&quot;</span>, <span class="at">title  =</span> <span class="st">&quot;レート推移&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">family =</span> <span class="st">&quot;Meiryo&quot;</span>, <span class="at">color =</span> <span class="st">&quot;manager&quot;</span>)<span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1225</span>, <span class="dv">1600</span>, <span class="at">by =</span> <span class="dv">20</span>))<span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">500</span>, <span class="at">by =</span> <span class="dv">20</span>))</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
-<div id="相手フォーメーションごとの戦績" class="section level2">
-<h2>相手フォーメーションごとの戦績</h2>
-<pre class="r"><code>#全戦績平均
-score %&gt;% 
-  filter(CP == 0,
-         manager %in% c(11,12)) %&gt;% 
-  summarise(GF = mean(GF),
-            GA = mean(GA),
-            Win_rate = mean(W),
-            lose_rate = mean(L),
-            n = n(),
-            rate = mean(rate)) %&gt;% 
-  filter(n &gt;= 2)</code></pre>
+<div id="相手フォーメーションごとの戦績" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> 相手フォーメーションごとの戦績</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#全戦績平均</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>score <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>         manager <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">12</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">GF =</span> <span class="fu">mean</span>(GF),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">GA =</span> <span class="fu">mean</span>(GA),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">Win_rate =</span> <span class="fu">mean</span>(W),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">lose_rate =</span> <span class="fu">mean</span>(L),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">rate =</span> <span class="fu">mean</span>(rate)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 6
 ##      GF    GA Win_rate lose_rate     n  rate
 ##   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
 ## 1  2.06  1.08    0.593     0.209    86 1450.</code></pre>
-<pre class="r"><code>#相手フォーメーションごと戦績
-result_opsys &lt;- score_manager %&gt;% 
-  filter(CP == 0,
-         manager %in% c(11,12)) %&gt;% 
-  group_by(opponent_system) %&gt;% 
-  summarise(GF = mean(GF),
-            GA = mean(GA),
-            Win_rate = mean(W),
-            lose_rate = mean(L),
-            shot = mean(shot,na.rm = T),
-            pass = mean(pass,na.rm = T),
-            possesion = mean(possesion,na.rm = T),
-            n = n(),
-            rate = min(rate)) %&gt;% 
-  mutate(across(2:8,round,3)) %&gt;% 
-  filter(n &gt;= 2)
-result_opsys</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#相手フォーメーションごと戦績</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>result_opsys <span class="ot">&lt;-</span> score_manager <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>         manager <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">12</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(opponent_system) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">GF =</span> <span class="fu">mean</span>(GF),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">GA =</span> <span class="fu">mean</span>(GA),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">Win_rate =</span> <span class="fu">mean</span>(W),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">lose_rate =</span> <span class="fu">mean</span>(L),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">shot =</span> <span class="fu">mean</span>(shot,<span class="at">na.rm =</span> T),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">pass =</span> <span class="fu">mean</span>(pass,<span class="at">na.rm =</span> T),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">possesion =</span> <span class="fu">mean</span>(possesion,<span class="at">na.rm =</span> T),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">rate =</span> <span class="fu">min</span>(rate)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">8</span>,round,<span class="dv">3</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> <span class="dv">2</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>result_opsys</span></code></pre></div>
 <pre><code>## # A tibble: 11 x 10
 ##    opponent_system    GF    GA Win_rate lose_rate  shot  pass possesion     n
 ##    &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;
@@ -757,40 +920,40 @@ result_opsys</code></pre>
 ## 10 532              3.5  1        1         0      5    0.83      0.54      2
 ## 11 &lt;NA&gt;             2    1.5      0.5       0.5    5    0.86      0.59      2
 ## # ... with 1 more variable: rate &lt;dbl&gt;</code></pre>
-<pre class="r"><code>#システムごとのシュート数
-score_manager %&gt;% 
-  filter(CP == 0,
-         manager %in% c(11,12)) %&gt;% 
-  ggplot()+
-  geom_boxplot(aes(x = opponent_system, y = shot, 
-                   fill = opponent_system))+
-  geom_hline(yintercept = mean(score_manager$shot, na.rm = T))+
-  labs(fill = &quot;system&quot;, title = &quot;相手sys毎のシュート数&quot;)+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#システムごとのシュート数</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>score_manager <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         manager <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">12</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> opponent_system, <span class="at">y =</span> shot, </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">fill =</span> opponent_system))<span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">mean</span>(score_manager<span class="sc">$</span>shot, <span class="at">na.rm =</span> T))<span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">&quot;system&quot;</span>, <span class="at">title =</span> <span class="st">&quot;相手sys毎のシュート数&quot;</span>)<span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_boxplot).</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>#システムごとのpossesion
-result_opsys %&gt;%
-  arrange(desc(opponent_system)) %&gt;% 
-  ggplot()+
-  geom_bar(aes(x = opponent_system, y = possesion, 
-                   fill = opponent_system), stat = &quot;identity&quot;)+
-  geom_hline(yintercept = mean(result_opsys$possesion), na.rm = T, 
-             color = &quot;#18437a&quot;, lty = 1, size = 1.5)</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#システムごとのpossesion</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>result_opsys <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(opponent_system)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> opponent_system, <span class="at">y =</span> possesion, </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">fill =</span> opponent_system), <span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>)<span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">mean</span>(result_opsys<span class="sc">$</span>possesion), <span class="at">na.rm =</span> T, </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;#18437a&quot;</span>, <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="fl">1.5</span>)</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
-<pre class="r"><code>#結果1
-result_opsys %&gt;% 
-  rename(&quot;op_sys&quot; = opponent_system) %&gt;% 
-    formattable(list(
-    manager = formatter(&quot;span&quot;, style = ~style(font.weight = &quot;bold&quot;)),
-    GF = color_bar(&quot;#becfed&quot;),
-    GA = color_bar(&quot;#ecc6ba&quot;),
-    Win_rate = formatter(&quot;span&quot;,
-     style = x ~ style(
-       color = ifelse(x &lt;= 0.5, &quot;red&quot;, &quot;#2b2b2b&quot;))),
-    lose_rate = formatter(&quot;span&quot;,
-     style = x ~ style(
-       color = ifelse(x &gt;= 0.3, &quot;red&quot;, &quot;#2b2b2b&quot;)))))</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#結果1</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>result_opsys <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">&quot;op_sys&quot;</span> <span class="ot">=</span> opponent_system) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">formattable</span>(<span class="fu">list</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">manager =</span> <span class="fu">formatter</span>(<span class="st">&quot;span&quot;</span>, <span class="at">style =</span> <span class="sc">~</span><span class="fu">style</span>(<span class="at">font.weight =</span> <span class="st">&quot;bold&quot;</span>)),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">GF =</span> <span class="fu">color_bar</span>(<span class="st">&quot;#becfed&quot;</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">GA =</span> <span class="fu">color_bar</span>(<span class="st">&quot;#ecc6ba&quot;</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Win_rate =</span> <span class="fu">formatter</span>(<span class="st">&quot;span&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">style =</span> x <span class="sc">~</span> <span class="fu">style</span>(</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="fu">ifelse</span>(x <span class="sc">&lt;=</span> <span class="fl">0.5</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#2b2b2b&quot;</span>))),</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">lose_rate =</span> <span class="fu">formatter</span>(<span class="st">&quot;span&quot;</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">style =</span> x <span class="sc">~</span> <span class="fu">style</span>(</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="fu">ifelse</span>(x <span class="sc">&gt;=</span> <span class="fl">0.3</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#2b2b2b&quot;</span>)))))</span></code></pre></div>
 <table class="table table-condensed">
 <thead>
 <tr>
@@ -1181,45 +1344,45 @@ NA
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>#結果2
-#plot
-result_opsys %&gt;% 
-  mutate(opponent_system = as.factor(opponent_system)) %&gt;% 
-  arrange(desc(opponent_system) )%&gt;% 
-  ggplot(aes(x = opponent_system, y = Win_rate,
-             fill = Win_rate))+
-  geom_hline(yintercept = 0.5, lty = 2)+
-  geom_bar(aes(y = Win_rate), stat = &quot;identity&quot;)+
-  geom_text(aes(label = round(Win_rate,3)),
-            hjust = 1.4, color = &quot;white&quot;)+
-  scale_fill_gradientn(colors = met.brewer(&quot;Hokusai2&quot;))+
-  labs(y = &quot;勝率&quot;, fill = &quot;勝率&quot;,
-       title = &quot;相手システムごとの戦績&quot;)+
-  coord_flip()</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#結果2</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#plot</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>result_opsys <span class="sc">%&gt;%</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">opponent_system =</span> <span class="fu">as.factor</span>(opponent_system)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(opponent_system) )<span class="sc">%&gt;%</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> opponent_system, <span class="at">y =</span> Win_rate,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">fill =</span> Win_rate))<span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.5</span>, <span class="at">lty =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">y =</span> Win_rate), <span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>)<span class="sc">+</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Win_rate,<span class="dv">3</span>)),</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="fl">1.4</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>)<span class="sc">+</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(<span class="at">colors =</span> <span class="fu">met.brewer</span>(<span class="st">&quot;Hokusai2&quot;</span>))<span class="sc">+</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;勝率&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;勝率&quot;</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;相手システムごとの戦績&quot;</span>)<span class="sc">+</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
-<p>#ポゼッションについて ##ポゼッションには「時間」と「回数」の2軸がある</p>
+<p>#ポゼッションについて##ポゼッションには「時間」と「回数」の2軸がある</p>
 <p>##支配率及び成功率と、得失点及び勝率の関係</p>
-<pre class="r"><code>library(corrplot)</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span></code></pre></div>
 <pre><code>## corrplot 0.92 loaded</code></pre>
-<pre class="r"><code>score %&gt;% 
-  select(id,manager,system,opponent_rate,possesion,
-         shot,pass,GF,GA,W,L,D) %&gt;%
-  drop_na(id,manager,system,opponent_rate,possesion,
-         shot,pass,GF,GA,W,L,D) %&gt;% 
-  cor() %&gt;% 
-  corrplot(tl.col=&quot;black&quot;)</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>score <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id,manager,system,opponent_rate,possesion,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>         shot,pass,GF,GA,W,L,D) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(id,manager,system,opponent_rate,possesion,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>         shot,pass,GF,GA,W,L,D) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">corrplot</span>(<span class="at">tl.col=</span><span class="st">&quot;black&quot;</span>)</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<pre class="r"><code># 支配率＆得点
-# 支配率＆失点
-# 支配率＆勝率
-# 支配率＆負率
-# パス成功率＆得点
-# パス成功率＆失点
-# パス成功率＆勝率
-# パス成功率＆負率</code></pre>
-<p>#　Goalの詳細分析 ## データセット</p>
-<pre class="r"><code># データ概観
-goal_data &lt;- read_csv(&quot;Goal.csv&quot;)</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 支配率＆得点</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 支配率＆失点</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 支配率＆勝率</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 支配率＆負率</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># パス成功率＆得点</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># パス成功率＆失点</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># パス成功率＆勝率</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># パス成功率＆負率</span></span></code></pre></div>
+<p>#　Goalの詳細分析## データセット</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データ概観</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>goal_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;Goal.csv&quot;</span>)</span></code></pre></div>
 <pre><code>## Rows: 512 Columns: 10</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
@@ -1228,140 +1391,145 @@ goal_data &lt;- read_csv(&quot;Goal.csv&quot;)</code></pre>
 <pre><code>## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>goal_data %&gt;%
-  count(G) %&gt;%
-  drop_na() %&gt;% 
-  arrange(desc(n)) %&gt;% 
-  mutate(game = n_distinct(goal_data$id))</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>goal_data <span class="ot">&lt;-</span> goal_data <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(id)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">G_count =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(G),<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">A_count =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(A),<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">GA_count =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(GA),<span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>goal_data <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(G) <span class="sc">%&gt;%</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">game =</span> <span class="fu">n_distinct</span>(goal_data<span class="sc">$</span>id))</span></code></pre></div>
 <pre><code>## # A tibble: 11 x 3
 ##    G              n  game
 ##    &lt;chr&gt;      &lt;int&gt; &lt;int&gt;
-##  1 Rummenigge    17    33
-##  2 Neymar        11    33
-##  3 Messi          7    33
-##  4 Cruijff        6    33
-##  5 Totti          6    33
-##  6 Isak           4    33
-##  7 Beckham        3    33
-##  8 Haaland        2    33
-##  9 -              1    33
-## 10 kante          1    33
-## 11 Vieira         1    33</code></pre>
-<pre class="r"><code>#ゴールまでの経路（ヒストグラム）
-goal_data %&gt;% 
-  filter(!is.na(G)) %&gt;% 
-  group_by(id) %&gt;% 
-  ggplot(aes(`way to Goal`))+
-  geom_histogram(stat = &quot;count&quot;)</code></pre>
+##  1 Rummenigge    17    32
+##  2 Neymar        11    32
+##  3 Messi          7    32
+##  4 Cruijff        6    32
+##  5 Totti          6    32
+##  6 Isak           4    32
+##  7 Beckham        3    32
+##  8 Haaland        2    32
+##  9 -              1    32
+## 10 kante          1    32
+## 11 Vieira         1    32</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ゴールまでの経路（ヒストグラム）</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>goal_data <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(G)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="st">`</span><span class="at">way to Goal</span><span class="st">`</span>))<span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">stat =</span> <span class="st">&quot;count&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<pre class="r"><code>goal_data %&gt;% 
-  filter(!is.na(GA)) %&gt;% 
-  group_by(id) %&gt;% 
-  ggplot(aes(`way to Goal`))+
-  geom_histogram(stat = &quot;count&quot;)</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>goal_data <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(GA)) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="st">`</span><span class="at">way to Goal</span><span class="st">`</span>))<span class="sc">+</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">stat =</span> <span class="st">&quot;count&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
 </div>
-<div id="ゴールの価値" class="section level2">
-<h2>ゴールの価値</h2>
-<div id="勝利に必要な得点数" class="section level3">
-<h3>勝利に必要な得点数</h3>
-<pre class="r"><code># 勝利と得点数のバブルチャート
-score %&gt;% 
-  filter(CP == 0) %&gt;%
-  group_by(W,GF) %&gt;% 
-  count() %&gt;% 
-  ggplot(aes(x = W, y = GF))+
-  geom_point(aes(size = n))</code></pre>
+<div id="ゴールの価値" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> ゴールの価値</h2>
+<div id="勝利に必要な得点数" class="section level3" number="3.4.1">
+<h3><span class="header-section-number">3.4.1</span> 勝利に必要な得点数</h3>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 勝利と得点数のバブルチャート</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>score <span class="sc">%&gt;%</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(W,GF) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> W, <span class="at">y =</span> GF))<span class="sc">+</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> n))</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<pre class="r"><code># 各resultごとの平均得失点数
-score %&gt;% 
-  filter(CP == 0) %&gt;%
-  group_by(result) %&gt;% 
-  summarise(GF = mean(GF),
-            GA = mean(GA)) </code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 各resultごとの平均得失点数</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>score <span class="sc">%&gt;%</span> </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(result) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">GF =</span> <span class="fu">mean</span>(GF),</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">GA =</span> <span class="fu">mean</span>(GA)) </span></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   result    GF    GA
 ##   &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;
 ## 1 引     1.48  1.48 
 ## 2 勝     2.64  0.721
 ## 3 負     0.972 2.61</code></pre>
-<pre class="r"><code># 勝利した際の得点ヒストグラム
-score %&gt;% 
-  filter(CP == 0,
-         result == &quot;勝&quot;) %&gt;%
-  ggplot(aes(GF))+
-  geom_histogram(aes(y=..density..),color = &quot;#f2f7f4&quot;,
-                 binwidth = 1)+
-  scale_x_continuous(breaks = seq(0,8,by=1))</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 勝利した際の得点ヒストグラム</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>score <span class="sc">%&gt;%</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>         result <span class="sc">==</span> <span class="st">&quot;勝&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(GF))<span class="sc">+</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y=</span>..density..),<span class="at">color =</span> <span class="st">&quot;#f2f7f4&quot;</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">binwidth =</span> <span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8</span>,<span class="at">by=</span><span class="dv">1</span>))</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
-<pre class="r"><code># 相対度数
-score %&gt;% 
-  filter(CP == 0) %&gt;%
-  group_by(GF) %&gt;% 
-  summarise(W = mean(W),
-            L = mean(L),
-            D = mean(D)) %&gt;% 
-  gather(key = results,value = rate, -GF) %&gt;% 
-  ggplot(aes(GF,rate,fill = results, color = results))+
-  geom_point()+
-  geom_line()</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 相対度数</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>score <span class="sc">%&gt;%</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(GF) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">W =</span> <span class="fu">mean</span>(W),</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">L =</span> <span class="fu">mean</span>(L),</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">D =</span> <span class="fu">mean</span>(D)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(<span class="at">key =</span> results,<span class="at">value =</span> rate, <span class="sc">-</span>GF) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(GF,rate,<span class="at">fill =</span> results, <span class="at">color =</span> results))<span class="sc">+</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
-<pre class="r"><code># 勝利した際の得失点バブルチャート
-score %&gt;% 
-  filter(CP == 0,
-         result == &quot;勝&quot;) %&gt;%
-  group_by(GF,GA) %&gt;% 
-  count() %&gt;% 
-  ggplot()+
-  geom_point(aes(x = GF, y = GA, size = n))+
-  scale_x_continuous(breaks = seq(0,8,by=1))+
-  scale_y_continuous(breaks = seq(0,8,by=1))</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 勝利した際の得失点バブルチャート</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>score <span class="sc">%&gt;%</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>         result <span class="sc">==</span> <span class="st">&quot;勝&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(GF,GA) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> GF, <span class="at">y =</span> GA, <span class="at">size =</span> n))<span class="sc">+</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8</span>,<span class="at">by=</span><span class="dv">1</span>))<span class="sc">+</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8</span>,<span class="at">by=</span><span class="dv">1</span>))</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
 </div>
-<div id="何点目の得点がもっとも価値があるか" class="section level3">
-<h3>何点目の得点がもっとも価値があるか</h3>
-<pre class="r"><code># goal_dataで分析
-goal_data %&gt;% 
-  group_by(id) %&gt;% 
-  mutate(No. = row_number()) %&gt;% 
-  view()
-
-# score_managerのデータで分析
-Value_of_theGoal &lt;- score %&gt;% 
-  filter(CP == 0) %&gt;%
-  group_by(GF) %&gt;% 
-  summarise(W = mean(W)) %&gt;% 
-  mutate(lag = lag(W),
-         marginal = W-lag(W)) %&gt;% 
-  replace_na(replace = list(marginal = 0)) %&gt;% 
-  rename(&quot;No.&quot; = GF)
-
-#GFのWに対する相対度数の微分（限界効果を計算）
-Value_of_theGoal %&gt;% 
-  ggplot(aes(No.,marginal))+
-  geom_point()+
-  geom_line()+
-  scale_x_continuous(breaks = seq(0,8,by=1))</code></pre>
+<div id="何点目の得点がもっとも価値があるか" class="section level3" number="3.4.2">
+<h3><span class="header-section-number">3.4.2</span> 何点目の得点がもっとも価値があるか</h3>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># goal_dataで分析</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>goal_data <span class="sc">%&gt;%</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">No. =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">view</span>()</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># score_managerのデータで分析</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>Value_of_theGoal <span class="ot">&lt;-</span> score <span class="sc">%&gt;%</span> </span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(GF) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">W =</span> <span class="fu">mean</span>(W)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lag =</span> <span class="fu">lag</span>(W),</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">marginal =</span> W<span class="sc">-</span><span class="fu">lag</span>(W)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replace_na</span>(<span class="at">replace =</span> <span class="fu">list</span>(<span class="at">marginal =</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">&quot;No.&quot;</span> <span class="ot">=</span> GF)</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="co">#GFのWに対する相対度数の微分（限界効果を計算）</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>Value_of_theGoal <span class="sc">%&gt;%</span> </span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(No.,marginal))<span class="sc">+</span></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8</span>,<span class="at">by=</span><span class="dv">1</span>))</span></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
-<div id="得点価値ランキング" class="section level3">
-<h3>得点価値ランキング</h3>
-<pre class="r"><code>Goal_Value_rank &lt;- score_manager %&gt;% 
-  filter(CP == 0,
-         manager %in% c(11,12)) %&gt;% 
-  gather(key = &quot;score&quot;, value = &quot;scorer&quot;, #scorerをまとめる
-         starts_with(&quot;score&quot;)) %&gt;% 
-  filter(scorer != &quot;失点&quot;) %&gt;% 
-  group_by(id) %&gt;% 
-  mutate(No. = row_number()) %&gt;% 
-  left_join(Value_of_theGoal, by = &quot;No.&quot;) %&gt;% 
-  group_by(scorer) %&gt;% 
-  summarise(n = n(),
-            value = sum(marginal,rm.na = T)) %&gt;% 
-  arrange(desc(value))
-Goal_Value_rank</code></pre>
+<div id="得点価値ランキング" class="section level3" number="3.4.3">
+<h3><span class="header-section-number">3.4.3</span> 得点価値ランキング</h3>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>Goal_Value_rank <span class="ot">&lt;-</span> score_manager <span class="sc">%&gt;%</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>         manager <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">12</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(<span class="at">key =</span> <span class="st">&quot;score&quot;</span>, <span class="at">value =</span> <span class="st">&quot;scorer&quot;</span>, <span class="co">#scorerをまとめる</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">starts_with</span>(<span class="st">&quot;score&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scorer <span class="sc">!=</span> <span class="st">&quot;失点&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">No. =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(Value_of_theGoal, <span class="at">by =</span> <span class="st">&quot;No.&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(scorer) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">value =</span> <span class="fu">sum</span>(marginal,<span class="at">rm.na =</span> T)) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(value))</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>Goal_Value_rank</span></code></pre></div>
 <pre><code>## # A tibble: 16 x 3
 ##    scorer          n value
 ##    &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt;
@@ -1384,62 +1552,101 @@ Goal_Value_rank</code></pre>
 </div>
 </div>
 </div>
-<div id="ゴール数アシスト数" class="section level1">
-<h1>ゴール数、アシスト数</h1>
-<pre class="r"><code>score_manager %&gt;% 
-  filter(CP == 0,
-         manager %in% c(11,12)) %&gt;% 
-  gather(key = &quot;score&quot;, value = &quot;scorer&quot;, #scorerをまとめる
-         starts_with(&quot;score&quot;)) %&gt;% 
-  select(id,score,scorer) %&gt;% 
-  filter(scorer != &quot;失点&quot;) %&gt;% 
-  group_by(id) %&gt;% 
-  mutate(No. = row_number()) %&gt;% 
-  select(id,score,scorer,No.) %&gt;% 
-  arrange(id)</code></pre>
-<pre><code>## # A tibble: 180 x 4
-## # Groups:   id [79]
-##       id score       scorer       No.
-##    &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;int&gt;
-##  1   224 scorer...18 Rummenigge     1
-##  2   225 scorer...16 Rummenigge     1
-##  3   225 scorer...18 Cruijff        2
-##  4   225 scorer...20 Rummenigge     3
-##  5   226 scorer...16 Messi          1
-##  6   226 scorer...20 Messi          2
-##  7   227 scorer...16 Vieira         1
-##  8   227 scorer...20 Cruijff        2
-##  9   227 scorer...22 Totti          3
-## 10   227 scorer...24 Neymar         4
-## # ... with 170 more rows</code></pre>
-<pre class="r"><code>score_manager %&gt;% 
-  filter(CP == 0,
-         manager %in% c(11,12)) %&gt;% 
-  gather(key = &quot;assist&quot;, value = &quot;assistant&quot;, 
-         starts_with(&quot;assist&quot;)) %&gt;% 
-  count(assistant) %&gt;% 
-  arrange(desc(n)) %&gt;% 
-  filter(!str_detect(assistant,&quot;失点|ー&quot;))</code></pre>
-<pre><code>## # A tibble: 13 x 2
-##    assistant       n
-##    &lt;chr&gt;       &lt;int&gt;
-##  1 Messi          31
-##  2 Totti          26
-##  3 Cruijff        14
-##  4 Nakata         10
-##  5 Rummenigge     10
-##  6 Ronaldinho      8
-##  7 Arnold          7
-##  8 Beckham         6
-##  9 Beckenbauer     5
-## 10 Neymar          3
-## 11 Petit           2
-## 12 Vieira          2
-## 13 Davies          1</code></pre>
+<div id="ゴール数アシスト数" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> ゴール数、アシスト数</h1>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>score_manager <span class="sc">%&gt;%</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(id <span class="sc">&gt;</span> <span class="fu">max</span>(id)<span class="sc">-</span><span class="dv">30</span>) <span class="sc">%&gt;%</span>  <span class="co">#直近３０試合に絞る</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>         manager <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">12</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(<span class="at">key =</span> <span class="st">&quot;score&quot;</span>, <span class="at">value =</span> <span class="st">&quot;scorer&quot;</span>, <span class="co">#scorerをまとめる</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>         <span class="fu">starts_with</span>(<span class="st">&quot;score&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(scorer) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(scorer,<span class="st">&quot;失点|ー&quot;</span>))</span></code></pre></div>
+<pre><code>## # A tibble: 9 x 2
+##   scorer         n
+##   &lt;chr&gt;      &lt;int&gt;
+## 1 Rummenigge     9
+## 2 Messi          7
+## 3 Neymar         7
+## 4 Cruijff        4
+## 5 Isak           4
+## 6 Totti          3
+## 7 Haaland        2
+## 8 Beckham        1
+## 9 viera          1</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(id,score,scorer) %&gt;% </span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(scorer != &quot;失点&quot;) %&gt;% </span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># group_by(id) %&gt;% </span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mutate(No. = row_number()) %&gt;% </span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(id,score,scorer,No.) %&gt;% </span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arrange(id)</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>score_manager <span class="sc">%&gt;%</span> </span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(id <span class="sc">&gt;</span> <span class="fu">max</span>(id)<span class="sc">-</span><span class="dv">30</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CP <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>         manager <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">12</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(<span class="at">key =</span> <span class="st">&quot;assist&quot;</span>, <span class="at">value =</span> <span class="st">&quot;assistant&quot;</span>, </span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>         <span class="fu">starts_with</span>(<span class="st">&quot;assist&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(assistant) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(assistant,<span class="st">&quot;失点|ー&quot;</span>))</span></code></pre></div>
+<pre><code>## # A tibble: 7 x 2
+##   assistant      n
+##   &lt;chr&gt;      &lt;int&gt;
+## 1 Totti          9
+## 2 Messi          7
+## 3 Arnold         3
+## 4 Beckham        3
+## 5 Cruijff        3
+## 6 Ronaldinho     3
+## 7 Petit          2</code></pre>
+<div id="得点時間" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> 得点時間</h2>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">view</span>(goal_data)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 試合数と試合ごとの平均ゴール数（被ゴール数）</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>goal_data <span class="sc">%&gt;%</span> </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">id =</span> <span class="fu">length</span>(<span class="fu">unique</span>(id)),</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">G =</span> <span class="fu">sum</span>(G_count),</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">GA =</span> <span class="fu">sum</span>(GA_count)) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Ggame =</span> G<span class="sc">/</span>id,</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">GAgame =</span> GA<span class="sc">/</span>id)</span></code></pre></div>
+<pre><code>## # A tibble: 1 x 5
+##      id     G    GA Ggame GAgame
+##   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1    32    59    46  1.84   1.44</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># histgram</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>goal_data <span class="sc">%&gt;%</span> </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">G_GA =</span> <span class="fu">if_else</span>(G_count<span class="sc">==</span><span class="dv">1</span>,<span class="st">&quot;G&quot;</span>,<span class="st">&quot;GA&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(time))<span class="sc">+</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> G_GA),</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">position =</span> <span class="st">&quot;identity&quot;</span>,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">color =</span> <span class="st">&quot;white&quot;</span>)</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Violin plot</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>goal_data <span class="sc">%&gt;%</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">G_GA =</span> <span class="fu">if_else</span>(G_count<span class="sc">==</span><span class="dv">1</span>,<span class="st">&quot;G&quot;</span>,<span class="st">&quot;GA&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(time,G_GA,<span class="at">fill =</span> G_GA))<span class="sc">+</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 得点者ごとのGoal Time</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>goal_data <span class="sc">%&gt;%</span> </span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(G)) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(time))<span class="sc">+</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">10</span>)<span class="sc">+</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="at">by=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> G)</span></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
+</div>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -1471,7 +1678,41 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
