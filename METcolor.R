@@ -7,5 +7,12 @@ metcolor <- c("Degas", "Derain", "Egypt",
               "Redon", "Renoir", "Robert", "Signac", "Stevens", "Tara", "Thomas",
               "Tiepolo", "Troy", "Tsimshian", "VanGogh1", "VanGogh2", "VanGogh3",
               "Veronese", "Wissing")
+metcolor
+met.brewer()
 
-met.brewer("Greek")
+
+# 一覧で見る
+library(tidyverse)
+data <- map(.x = metcolor, .f = met.brewer) 
+data
+

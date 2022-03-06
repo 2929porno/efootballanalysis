@@ -23,7 +23,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggthemes)
-library(MetBrewer)
+library(MetBrewer) 
 library(formattable)
 
 score <- read_csv("スコアボード.csv")
