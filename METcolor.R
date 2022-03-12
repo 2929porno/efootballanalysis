@@ -16,3 +16,6 @@ library(tidyverse)
 data <- map(.x = metcolor, .f = met.brewer) 
 data
 
+
+library(tidyverse)
+score <- read_csv("スコアボード.csv")

@@ -1,7 +1,7 @@
 ---
-title: "dataset ~ basic stats"
-author: "2929porno"
-date: "2022/2/20"
+title: "basic stats"
+author: "loveloveup"
+date: "2022/03/06"
 output:
   html_document:
     # 目次と見出しに関するもの
@@ -22,15 +22,16 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(readxl)
 library(ggthemes)
 library(MetBrewer) 
 library(formattable)
-
-score <- read_csv("スコアボード.csv")
+library(DT)
+score <- read_xlsx("スコアボード.xlsx")
 Manager <- read_csv("監督フォーメーション.csv")
 score <- score %>%
   filter(rate != "") %>%
-  replace_na(replace = list(opponent_rate = 0)) %>% 
+  replace_na(replace = list(opponent_rate = "0")) %>% 
   mutate(CP = ifelse(opponent_rate == "CP",1,0),　　　
          CP = as.factor(CP),
          opponent_rate = as.numeric(opponent_rate)) %>%
@@ -45,9 +46,6 @@ score <- score %>%
   mutate(W = str_detect(result,"勝"),
          D = str_detect(result,"引"),
          L = str_detect(result,"負"))
-#Managerデータ追加
-score_manager <- left_join(score, Manager,
-                           by= "manager")
 score <- score %>%
   filter(rate != "") %>%   
   mutate(CP = ifelse(opponent_rate == "CP",1,0),　　　
@@ -57,6 +55,9 @@ score <- score %>%
          possesion = as.numeric(possesion),
          pass = as.numeric(pass),
          shot = as.numeric(shot))
+#Managerデータ追加
+score_manager <- left_join(score, Manager,
+                           by= "manager")
 ```
 
 # 記述統計
@@ -141,7 +142,7 @@ result_opsys <- score_manager %>%
             rate = min(rate)) %>% 
   mutate(across(2:8,round,3)) %>% 
   filter(n >= 2)
-result_opsys
+DT:::datatable(result_opsys)
   
 #システムごとのシュート数
 score_manager %>% 
@@ -157,11 +158,14 @@ score_manager %>%
 #システムごとのpossesion
 result_opsys %>%
   arrange(desc(opponent_system)) %>% 
+  mutate(posse = as.factor(ifelse(possesion >= mean(possesion),T,NA))) %>%
   ggplot()+
   geom_bar(aes(x = opponent_system, y = possesion, 
-                   fill = opponent_system), stat = "identity")+
+                   fill = posse), stat = "identity")+
   geom_hline(yintercept = mean(result_opsys$possesion), na.rm = T, 
-             color = "#18437a", lty = 1, size = 1.5)
+             color = "#18437a", lty = 5)+
+  labs(title = "相手sys毎のpossesion")+
+  theme(legend.position = "non")
 
 #結果1
 result_opsys %>% 
@@ -195,10 +199,10 @@ result_opsys %>%
 
 ```
 
-#ポゼッションについて
-##ポゼッションには「時間」と「回数」の2軸がある
+# ポゼッションについて
+## ポゼッションには「時間」と「回数」の2軸がある
 
-##支配率及び成功率と、得失点及び勝率の関係
+## 支配率及び成功率と、得失点及び勝率の関係
 ```{r}
 library(corrplot)
 score %>% 
@@ -233,7 +237,8 @@ goal_data %>%
   count(G) %>%
   drop_na() %>% 
   arrange(desc(n)) %>% 
-  mutate(game = n_distinct(goal_data$id))
+  mutate(game = n_distinct(goal_data$id)) %>% 
+  DT::datatable()
 
 #ゴールまでの経路（ヒストグラム）
 goal_data %>% 
@@ -310,7 +315,7 @@ score %>%
 goal_data %>% 
   group_by(id) %>% 
   mutate(No. = row_number()) %>% 
-  view()
+  head()
 
 # score_managerのデータで分析
 Value_of_theGoal <- score %>% 
@@ -336,8 +341,7 @@ Value_of_theGoal %>%
 ### 得点価値ランキング
 ```{r}
 Goal_Value_rank <- score_manager %>% 
-  filter(CP == 0,
-         manager %in% c(11,12)) %>% 
+  filter(CP == 0) %>% 
   gather(key = "score", value = "scorer", #scorerをまとめる
          starts_with("score")) %>% 
   filter(scorer != "失点") %>% 
@@ -348,7 +352,8 @@ Goal_Value_rank <- score_manager %>%
   summarise(n = n(),
             value = sum(marginal,rm.na = T)) %>% 
   arrange(desc(value))
-Goal_Value_rank
+DT::datatable(Goal_Value_rank)
+
 
 ```
 
@@ -358,13 +363,13 @@ Goal_Value_rank
 ```{r}
 score_manager %>% 
   filter(id > max(id)-30) %>%  #直近３０試合に絞る
-  filter(CP == 0,
-         manager %in% c(11,12)) %>% 
+  filter(CP == 0) %>% 
   gather(key = "score", value = "scorer", #scorerをまとめる
          starts_with("score")) %>% 
   count(scorer) %>% 
   arrange(desc(n)) %>% 
-  filter(!str_detect(scorer,"失点|ー"))
+  filter(!str_detect(scorer,"失点|ー")) %>% 
+  DT::datatable()
 
   # select(id,score,scorer) %>% 
   # filter(scorer != "失点") %>% 
@@ -374,19 +379,18 @@ score_manager %>%
   # arrange(id)
 score_manager %>% 
   filter(id > max(id)-30) %>% 
-  filter(CP == 0,
-         manager %in% c(11,12)) %>% 
+  filter(CP == 0) %>% 
   gather(key = "assist", value = "assistant", 
          starts_with("assist")) %>% 
   count(assistant) %>% 
   arrange(desc(n)) %>% 
-  filter(!str_detect(assistant,"失点|ー"))
+  filter(!str_detect(assistant,"失点|ー")) %>% 
+  DT::datatable()
 
 ```
 
 ## 得点時間
 ```{r}
-view(goal_data)
 
 # 試合数と試合ごとの平均ゴール数（被ゴール数）
 goal_data %>% 
